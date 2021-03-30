@@ -28,7 +28,19 @@ large_data_2=importdata('large_exp2.txt');
 large_data_3=importdata('large_exp3.txt');
 
 %% Convection
-%Vertical wall
+%Vertical wall (free convection vertical cylindar
+%All properties taken at film temperature which is (T_s-T_infinity)/2
+
+%D/L>=35/(Gr_L^(1/4));       %where d is the cylinder diameter, L is the boundry layer thickness
+
+%Lots of good values can be found as a function of temperature in appendix
+
+Gr_L=b*g*(rho^2)*(L^3)*dT/(mu^2);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
+Pr=mu*cp/k; %where cp is heat capacity, k is coeff.
+Ra_L=Gr_L*Pr;
+Nu_L=((0.825+0.387*(Ra_L^(1/6)))/((1+(0.492/Pr)^(9/16))^(8/27)))^2;
+
+
 %Horizontal plates (with sides?)
 
 %% Radiation
