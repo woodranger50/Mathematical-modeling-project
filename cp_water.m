@@ -4,4 +4,4 @@ function out = cp_water(T)
 %
 % cp=cp_water(T), T i Kelvingrader
 
-out = 4190-0.72504*(T-273)+9.3615e-3*(T-273)^2;
+out = 4190-0.72504.*(T-273)+9.3615e-3.*(T-273).^2;

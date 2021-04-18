@@ -86,28 +86,122 @@ Q_small=h*A_small_water*(T_film-T_surr)   %KJ
 
 %% Evaporation
 %Water surface
-m_flow_matrix=zeros(1,60);
+m_flow_small_1_matrix=zeros(1,60);
+m_flow_small_2_matrix=zeros(1,60);
+m_flow_small_3_matrix=zeros(1,60);
+m_flow_small_4_matrix=zeros(1,60);
+m_flow_small_5_matrix=zeros(1,60);
+
+m_flow_large_1_matrix=zeros(1,60);
+m_flow_large_2_matrix=zeros(1,60);
+m_flow_large_3_matrix=zeros(1,60);
+
 i=0
 for i=1:60
-    m_flow_1=(small_data_1.data(i+1,3)-small_data_1.data(i,3))/(small_data_1.data(i+1,1)-small_data_1.data(i,1));
-    m_flow_matrix(i)=m_flow_1;
-    temp_matrix(i)=small_data_1.data(i,1)
-% m_1=small_data_1.data((1:61),3)
-% t_1=small_data_1.data((1:61),2)
-% 
-% m_2=small_data_2.data((1:61),3)
-% t_2=small_data_2.data((1:61),2)
+    m_flow_1=-(small_data_1.data(i+1,3)-small_data_1.data(i,3))/(small_data_1.data(i+1,1)-small_data_1.data(i,1));
+    m_flow_small_1_matrix(i)=m_flow_1;
+    
+    m_flow_2=-(small_data_2.data(i+1,3)-small_data_2.data(i,3))/(small_data_2.data(i+1,1)-small_data_2.data(i,1));
+    m_flow_small_2_matrix(i)=m_flow_2;
+    
+    m_flow_3=-(small_data_3.data(i+1,3)-small_data_3.data(i,3))/(small_data_3.data(i+1,1)-small_data_3.data(i,1));
+    m_flow_small_3_matrix(i)=m_flow_3;
+    
+    m_flow_4=-(small_data_4.data(i+1,3)-small_data_4.data(i,3))/(small_data_4.data(i+1,1)-small_data_4.data(i,1));
+    m_flow_small_4_matrix(i)=m_flow_4;
+    
+    m_flow_5=-(small_data_5.data(i+1,3)-small_data_5.data(i,3))/(small_data_5.data(i+1,1)-small_data_5.data(i,1));
+    m_flow_small_5_matrix(i)=m_flow_5;
+    
+    
+    m_flow_1_large=-(large_data_1.data(i+1,3)-large_data_1.data(i,3))/(large_data_1.data(i+1,1)-large_data_1.data(i,1));
+    m_flow_large_1_matrix(i)=m_flow_1_large;
+    
+    m_flow_2_large=-(large_data_2.data(i+1,3)-large_data_2.data(i,3))/(large_data_2.data(i+1,1)-large_data_2.data(i,1));
+    m_flow_large_2_matrix(i)=m_flow_2_large;
+    
+    m_flow_3_large=-(large_data_3.data(i+1,3)-large_data_3.data(i,3))/(large_data_3.data(i+1,1)-large_data_3.data(i,1));
+    m_flow_large_3_matrix(i)=m_flow_3_large;
+    
+    % m_1=small_data_1.data((1:61),3)
+    % t_1=small_data_1.data((1:61),2)
+    %
+    % m_2=small_data_2.data((1:61),3)
+    % t_2=small_data_2.data((1:61),2)
 end
-% figure
-% subplot(2,1,1)
-% plot(m_1,t_1)
-% subplot(2,1,2)
-% plot(m_2,t_2)
+
+
+figure
+subplot(2,1,1)
+grid on
+title('Small beaker: Mass flow');  xlabel('Temperature (C°)');  ylabel('Mass flow (g/s)');     legend;
+hold on
+plot(small_data_1.data(1:60,2),m_flow_small_1_matrix)
+plot(small_data_2.data(1:60,2),m_flow_small_2_matrix)
+plot(small_data_3.data(1:60,2),m_flow_small_3_matrix)
+plot(small_data_4.data(1:60,2),m_flow_small_4_matrix)
+plot(small_data_5.data(1:60,2),m_flow_small_5_matrix)
+hold off
+
+subplot(2,1,2)
+title('Large beaker: Mass flow');  xlabel('Temperature (C°)');  ylabel('Mass flow (g/s)');     legend;
+hold on
+plot(small_data_1.data(1:60,2),m_flow_small_1_matrix)
+plot(small_data_2.data(1:60,2),m_flow_small_2_matrix)
+plot(small_data_3.data(1:60,2),m_flow_small_3_matrix)
+hold off
+
+
+m_flow_average=(m_flow_small_1_matrix+m_flow_small_2_matrix+m_flow_small_3_matrix+m_flow_small_4_matrix+m_flow_small_5_matrix)/5;
+m_flow_average_large=(m_flow_large_1_matrix+m_flow_large_2_matrix+m_flow_large_3_matrix)/3;
+
+T_average_small=(small_data_1.data(1:60,2)+small_data_2.data(1:60,2)+small_data_3.data(1:60,2)+small_data_4.data(1:60,2)+small_data_5.data(1:60,2))/5;
+T_average_large=(large_data_1.data(1:60,2)+large_data_2.data(1:60,2)+large_data_3.data(1:60,2))/3;
+
+T_film_average_small=((T_average_small-T_surr)/2);
+T_film_average_small=((T_average_small-T_surr)/2);
+
+Evap_energy_system_small=cp_water(T_film_average_small)*T_film_average_small*m_flow_average;
 %% Conduction
 %Conduction from water, through glass, to air
 %The bottom is probably assumed to be 0.
 
+%% Plot of mass and temp
+figure
+subplot(2,1,1)
+title('Small beaker: Mass');  xlabel('Time (s)');  ylabel('Mass (g)');     legend;
+hold on
+plot(small_data_1.data(1:61,1),small_data_1.data(1:61,3))
+plot(small_data_2.data(1:61,1),small_data_2.data(1:61,3))
+plot(small_data_3.data(1:61,1),small_data_3.data(1:61,3))
+plot(small_data_4.data(1:61,1),small_data_4.data(1:61,3))
+plot(small_data_5.data(1:61,1),small_data_5.data(1:61,3))
+hold off
 
+subplot(2,1,2)
+title('Small beaker: Temperature (C°)');  xlabel('Time (s)');  ylabel('Temperature (C°)');     legend;
+hold on
+plot(small_data_1.data(1:61,1),small_data_1.data(1:61,2))
+plot(small_data_2.data(1:61,1),small_data_2.data(1:61,2))
+plot(small_data_3.data(1:61,1),small_data_3.data(1:61,2))
+plot(small_data_4.data(1:61,1),small_data_4.data(1:61,2))
+plot(small_data_5.data(1:61,1),small_data_5.data(1:61,2))
+hold off
 
+figure
+subplot(2,1,1)
+title('Large beaker: Mass');  xlabel('Time (s)');  ylabel('Mass (g)');     legend;
+hold on
+plot(large_data_1.data(1:61,1),large_data_1.data(1:61,3))
+plot(large_data_2.data(1:61,1),large_data_2.data(1:61,3))
+plot(large_data_3.data(1:61,1),large_data_3.data(1:61,3))
+hold off
 
+subplot(2,1,2)
+title('Large beaker: Temperature (C°)');  xlabel('Time (s)');  ylabel('Temperature (C°)');     legend;
+hold on
+plot(large_data_1.data(1:61,1),large_data_1.data(1:61,2))
+plot(large_data_2.data(1:61,1),large_data_2.data(1:61,2))
+plot(large_data_3.data(1:61,1),large_data_3.data(1:61,2))
+hold off
 
