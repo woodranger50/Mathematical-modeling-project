@@ -1,9 +1,9 @@
-function out=Data_retrieval(T)
+% function out=Data_retrieval(T_water)
 
 
 %We want to make a function that uses intial conditions to calculate heat
 %loss. Use that heat loss to calculate a new temperature. Bind all of this
-%toge
+%together to an ode.
 
 %% Fetching experimental data
 
@@ -58,6 +58,10 @@ rho_water_var=rho_water(T_water);               %kg/m^3
 V_water=m_water/rho_water_var;                  %m^3
 height_small_water=V_water/(pi*(((beaker_small(4)*(10^(-3)))/2)^2));    %m
 A_small_water=height_small_water*beaker_small(3)*pi;
+
+%Mass water
+m_water_initial=0.2;    %[kg] initial mass of water in beaker
+
 %% Convection
 %Vertical wall (free convection vertical cylindar
 %All properties taken at film temperature which is (T_s-T_infinity)/2
@@ -78,18 +82,21 @@ C=val;  %C is a value derived from appendix 1 equal to g*beta*(rho^2)/(my^2) wit
 %Lots of good values can be found as a function of temperature in appendix 1
 Gr_L=C*(L^3)*(T_film-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
 Ra_L=Gr_L*Pr_water_var;
+
+%Vertical plates
 Nu_L=((0.825+0.387*(Ra_L^(1/6)))/((1+(0.492/Pr_water_var)^(9/16))^(8/27)))^2;
 h=Nu_L*k_water_var/L;
 Q_vertical=h*A_small_water*(T_film-T_surr);   %J/s
 
 %Horizontal plates (with sides?)
 %use horizontal plates
-Nu_L_horizontal=054*Ra_L^(1/4);
+Nu_L_horizontal=0.54*Ra_L^(1/4);
 h_horizontal=Nu_L_horizontal*k_water_var/L;
 Q_horizontal=h_horizontal*A_small_water*(T_film-T_surr); %J/s
 
+Q_current=T_water*cp_water(T_water)*m_water_initial;
 Q_convection=Q_horizontal+Q_vertical;       %J/s
-
+T_new=(Q_current-Q_convection)/(cp_water(T_water)*m_water_initial);     %Needs time interval and evaporation
 %% Radiation
 %From sides (cylindrical walls)
 %Water surface
@@ -161,7 +168,7 @@ plot(small_data_5.data(1:61,1),small_data_5.data(1:61,3))
 hold off
 
 subplot(2,1,2)
-title('Small beaker: Temperature (C°)');  xlabel('Time (s)');  ylabel('Temperature (C°)');     legend;
+title('Small beaker: Temperature (°C)');  xlabel('Time (s)');  ylabel('Temperature (°C)');     legend;
 hold on
 plot(small_data_1.data(1:61,1),small_data_1.data(1:61,2))
 plot(small_data_2.data(1:61,1),small_data_2.data(1:61,2))
@@ -180,7 +187,7 @@ plot(large_data_3.data(1:61,1),large_data_3.data(1:61,3))
 hold off
 
 subplot(2,1,2)
-title('Large beaker: Temperature (C°)');  xlabel('Time (s)');  ylabel('Temperature (C°)');     legend;
+title('Large beaker: Temperature (°C)');  xlabel('Time (s)');  ylabel('Temperature (°C)');     legend;
 hold on
 plot(large_data_1.data(1:61,1),large_data_1.data(1:61,2))
 plot(large_data_2.data(1:61,1),large_data_2.data(1:61,2))
@@ -237,7 +244,7 @@ end
 figure
 subplot(2,1,1)
 grid on
-title('Small beaker: Mass flow');  xlabel('Temperature (C°)');  ylabel('Mass flow (g/s)');     legend;
+title('Small beaker: Mass flow');  xlabel('Temperature (°C)');  ylabel('Mass flow (g/s)');     legend;
 hold on
 plot(small_data_1.data(1:60,2),m_flow_small_1_matrix)
 plot(small_data_2.data(1:60,2),m_flow_small_2_matrix)
@@ -247,7 +254,7 @@ plot(small_data_5.data(1:60,2),m_flow_small_5_matrix)
 hold off
 
 subplot(2,1,2)
-title('Large beaker: Mass flow');  xlabel('Temperature (C°)');  ylabel('Mass flow (g/s)');     legend;
+title('Large beaker: Mass flow');  xlabel('Temperature (°C)');  ylabel('Mass flow (g/s)');     legend;
 hold on
 plot(small_data_1.data(1:60,2),m_flow_small_1_matrix)
 plot(small_data_2.data(1:60,2),m_flow_small_2_matrix)
@@ -267,4 +274,17 @@ T_film_average_large=((T_average_large+273.15+T_surr)./2);      %K
 Evap_energy_system_small=cp_water(T_film_average_small).*T_film_average_small.*m_flow_average;          %J/s
 Evap_energy_system_large=cp_water(T_film_average_large).*T_film_average_large.*m_flow_average_large;    %J/s
 
-end
+
+%% ODEtspan = [0 5];
+tspan = [0 5];
+m0 = 200;       %[kg]   Initial mass
+T0 = 80;        %[°C]   Initial temperature
+[t,y] = ode45(@(t,y) 2*t, tspan, m0, T0);
+figure
+hold on
+plot(t,y,'-o')
+hold off
+% end
+
+
+

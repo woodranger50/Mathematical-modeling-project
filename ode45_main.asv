@@ -1,0 +1,21 @@
+close all, clear, clc;
+t_span = [0 0.5];
+m_water = 0.2;       %[kg]   Initial mass
+T_water = 80+273.15;        %[K]   Initial temperature
+y0=[T_water,m_water];
+
+% [time,Temperature,mass] = ode45(@(T_water,m_water) Good_version(T_water,m_water),t_span,T_water,m_water);
+[t,y]
+
+% steps=length(T_water);
+% t=linspace(t_span(1),t_span(2),steps);
+
+figure
+hold on
+subplot(2,1,1)
+title('Mass');
+plot(time,Temperature,'-o')
+subplot(2,1,2)
+title('Temp')
+plot(time,mass,'-o')
+hold off
