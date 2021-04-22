@@ -1,5 +1,5 @@
 clear all, clear, clc;
-t_span = [0 10];
+t_span = [0 1800];
 % m_water = 0.2;       %[kg]   Initial mass
 T_water = 80+273.15;        %[K]   Initial temperature
 % y0=[T_water,m_water];
@@ -9,9 +9,9 @@ T_water = 80+273.15;        %[K]   Initial temperature
 
 % steps=length(T_water);
 % t=linspace(t_span(1),t_span(2),steps);
-
+T=y-273.15;
 figure
 hold on
 title('Temperature')
-plot(t,y,'-o')
+plot(t,T,'-o')
 hold off
