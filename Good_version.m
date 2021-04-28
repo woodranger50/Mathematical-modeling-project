@@ -1,4 +1,4 @@
-function T_water=Good_version(T_water)
+function dTdt=Good_version(T_water)
 %% Calculating initial values
 
 %Calc radiation wall-air
@@ -7,7 +7,7 @@ function T_water=Good_version(T_water)
 
 %Data for glass beakers are in ml, mm, mm, mm 
 %and are size, height, outer diameter, and inner diameter in order
-beaker_large=[800,135,98,93*10^-3];   
+beaker_large=[800,135,98,93]*10^-3;   
 beaker_small=[250,95,70,67]*10^-3;
 
 %Data for glass material
@@ -48,7 +48,18 @@ val=2.035*10^-9;    %taken at 298 K. Needs a function.)
 %Problem children
 C=val;  %C is a value derived from appendix 1 equal to g*beta*(rho^2)/(my^2) with unit 1/K*m^3
 
-T_film=(T_water+T_surr)/2;  %[K]
+
+%fsolve to find the inside and outside wall temperatures
+F=@T_wall_solve;
+x0=[330 320];
+OPTIONS=optimoptions(@fsolve,'Display','off');
+[T_wall,y]=fsolve(F,x0,OPTIONS);
+T_wall_inner=T_wall(1);
+T_wall_outer=T_wall(2);
+
+T_film=(T_surr+T_water)/2;   %Temperature for call functions may be at film temperature
+
+%% Convection 
 
 %Convection from water to inner wall 
 Gr_L_water_wall=C*(L_vert^3)*(T_water-T_wall_inner);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
@@ -62,8 +73,6 @@ Ra_L_wall_air=Gr_L_wall_air*pr_water(T_water);
 Nu_L_wall_air=((0.825+0.387*(Ra_L_wall_air^(1/6)))/((1+(0.492/pr_water(T_water))^(9/16))^(8/27)))^2;
 h_wall_air=Nu_L_wall_air*k_water(T_water)/L_vert;            %heat transfer coefficient for wall_outer-air
 
-T_wall_inner=T_water-(T_water-T_surr)/(h_water_wall/h_wall_air+delta*h_water_wall/k_glass+1);
-T_wall_outer=T_surr+(T_water-T_surr)/(h_wall_air/h_water_wall+delta*h_wall_air/k_glass+1);
 %Calc conv water-inner wall
 % q=m_glass_mantle*cp*dT;
 
@@ -123,7 +132,5 @@ dQdt=dQdt_water_air*1+dQdt_wall_air*1+dQdt_c*1+dQdt_w*1+dQdt_r*1;               
 %dQdt=cp_water(T_water)*m_water*(T_water-T_surr);            %[J/s^2]
 
 %Differential equation T(t)
-dTdt=dQdt/(cp_water(T_water)*m_water);                       %[K/s]
-T_water=-dTdt
-
+dTdt=-dQdt/(cp_water(T_water)*m_water);                       %[K/s]
 end
