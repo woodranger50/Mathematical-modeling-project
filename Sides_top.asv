@@ -17,20 +17,6 @@ T_wall_outer=T_wall(2);                             %Temperature of outer wall
 %Heat profile
 %Convection - Conduction - Convection + Radiation
 
-%Thermal convection
-%Water to inner wall
-% dQ_h2=alfa_2*S_1*(T-T_w)*dt
-G=h_water_wall*A_cyl_mantle*(T_water-T_wall_inner);               %[J/s^2]T_w film temp?
-
-%Outer wall to air
-% dQ_h2=alfa_2*S_1*(T-T_w)*dt
-G=h_wall_air*A_cyl_mantle*(T_wall_outer-T_surr);               %[J/s^2]T_w film temp?
-
-%Thermal radiation
-% dQ_c=epsilon*sigma*S_1*(T+273.15)^4*dt
-G=epsilon_glass(1)*sigma*A_cyl*(T_water)^4;            %[J/s^2]
-
-
 %% TOP
 
 
@@ -40,4 +26,8 @@ G=epsilon_glass(1)*sigma*A_cyl*(T_water)^4;            %[J/s^2]
 %Heat profile
 %Convection - Convection + Radiation + Evaporation
 
+G=@T_surface_solve;                                    %Declaring function
+x0=[280];                                       %Initial guess of temperatures
+OPTIONS=optimoptions(@fsolve,'Display','off');      %Turning off diplay
+[T_surface,y]=fzero(G,x0);                    %Fsolve for temperature profile
 

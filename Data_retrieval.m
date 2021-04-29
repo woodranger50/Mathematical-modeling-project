@@ -9,7 +9,7 @@
 
 
 
-addpath('C:\Chalmers\Year 3\Mathematical modeling\Project');
+addpath('C:\Chalmers\Year 3\Matematisk modellering\Github\Mathematical-modeling-project');
 
 
 % for i=1:5
