@@ -1,4 +1,4 @@
-function F = T_wall_solve(T_wall)
+function G = T_surface_solve(T_surface)
 %% Calculating initial values
 T_water=273.15+80;
 %Calc radiation wall-air
@@ -36,15 +36,15 @@ val=2.035*10^-9;    %taken at 298 K. Needs a function.)
 %Problem children
 C=val;  %C is a value derived from appendix 1 equal to g*beta*(rho^2)/(my^2) with unit 1/K*m^3
 
-%% fsolve of inside/outside wall temperatures
-%Convection from water to inner wall 
-Gr_L_water_wall=C*(L_vert^3)*(T_water-T_wall(1));   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
+%% fsolve of surface temperature
+%Convection from water to water surface 
+Gr_L_water_wall=C*(L_vert^3)*(T_water-T_surface(1));   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
 Ra_L_water_wall=Gr_L_water_wall*pr_water(T_water);
 Nu_L_water_wall=((0.825+0.387*(Ra_L_water_wall^(1/6)))/((1+(0.492/pr_water(T_water))^(9/16))^(8/27)))^2;
 h_water_wall=Nu_L_water_wall*k_water(T_water)/L_vert;            %heat transfer coefficient for water-wall_inner
 
 %Convection from outer wall to air
-Gr_L_wall_air=C*(L_vert^3)*(T_wall(2)-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
+Gr_L_wall_air=C*(L_vert^3)*(T_surface(2)-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
 Ra_L_wall_air=Gr_L_wall_air*pr_water(T_water);
 Nu_L_wall_air=((0.825+0.387*(Ra_L_wall_air^(1/6)))/((1+(0.492/pr_water(T_water))^(9/16))^(8/27)))^2;
 h_wall_air=Nu_L_wall_air*k_water(T_water)/L_vert;            %heat transfer coefficient for wall_outer-air
@@ -53,8 +53,8 @@ h_wall_air=Nu_L_wall_air*k_water(T_water)/L_vert;            %heat transfer coef
 T_h=T_water;    %Defines T_h as the temperature of the water
 T_c=T_surr;     %Defines T_c as the surrounding temperature
 
-F(1)=h_water_wall*(T_h-T_wall(1))-k_glass/delta*(T_wall(1)-T_wall(2));  %Function 1 
-F(2)=h_wall_air*(T_wall(2)-T_c)-k_glass/delta*(T_wall(1)-T_wall(2))-epsilon_glass(1)*sigma*A_cyl_mantle*(T_wall(2))^4;
+F(1)=h_water_wall*(T_h-T_surface(1))-k_glass/delta*(T_surface(1)-T_surface(2));  %Function 1 
+F(2)=h_wall_air*(T_surface(2)-T_c)-k_glass/delta*(T_surface(1)-T_surface(2))-epsilon_glass(1)*sigma*A_cyl_mantle*(T_surface(2))^4;
 
 
 

@@ -27,7 +27,6 @@ pa=101.3*10^3;              %[Pa]
 
 %% DECIDING VARIABLES
 m_water=0.2;                             %[kg] mass of water in beaker
-% Temperature=Temperature;          %[K] water temperature
 
 d_inner=beaker_small(4);            %[m] diameter water
 d_outer=beaker_small(3);            %[m]
@@ -85,16 +84,10 @@ B=1; %evaporation coefficient
 
 %Horizontal plates (with sides?)
 %use horizontal plates
-Gr_L_hori=C*(L_hori^3)*(T_film-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
+Gr_L_hori=C*(L_hori^3)*(T_water-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
 Ra_L_hori=Gr_L_hori*pr_water(T_water);
 Nu_L_hori=0.54*Ra_L_hori^(1/4);
 h_hori=Nu_L_hori*k_water(T_water)/L_hori; 
-
-%Vertical plates
-Gr_L_vert=C*(L_vert^3)*(T_film-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
-Ra_L_vert=Gr_L_vert*pr_water(T_water);
-Nu_L_vert=((0.825+0.387*(Ra_L_vert^(1/6)))/((1+(0.492/pr_water(T_water))^(9/16))^(8/27)))^2;
-h_vert=Nu_L_vert*k_water(T_water)/L_vert;
 
 %Partial pressures
 pws=exp((77.345+0.0057*T_surr-7235/T_surr)/(T_surr*8.2));
