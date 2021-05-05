@@ -41,10 +41,6 @@ L_vert=h_water;                             %[m]
 delta=d_outer-d_inner;                      %[m]
 m_glass_mantle=A_cyl_mantle*delta*rho_glass;%[kg]    
  
-val=2.035*10^-9;    %taken at 298 K. Needs a function.)   
-
-%Problem children
-C=val;  %C is a value derived from appendix 1 equal to g*beta*(rho^2)/(my^2) with unit 1/K*m^3
 
 
 %fsolve to find the inside and outside wall temperatures
@@ -56,12 +52,11 @@ T_wall_inner=T_wall(1);
 T_wall_outer=T_wall(2);
 
 G=@T_surface_solve;                                     %Declaring function
-x1=280;                                                %Initial guess of temperatures
+x1=330;                                                %Initial guess of temperatures
 [T_surface,y]=fsolve(G,x1,OPTIONS);                     %Fsolve for temperature profile
-% T_surface=real(T_surface);                             %NOT RIGHT!!! FIX!!!
-% T_film=(T_surr+T_water)/2;   %Temperature for call functions may be at film temperature
 
-
+beta=(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
+C=beta*g*(rho_water(T_water)^2)/(my_water(T_water)^2);                      %[1/K*m^3]
 
 
 %% Convection 
@@ -74,13 +69,6 @@ h_water_wall=Nu_L_water_wall*k_water(T_water)/L_vert;            %heat transfer 
 
 %Calc conv water-inner wall
 % q=m_glass_mantle*cp*dT;
-
-val=2.035*10^-9;    %taken at 298 K. Needs a function.)   
-
-%Problem children
-C=val;  %C is a value derived from appendix 1 equal to g*beta*(rho^2)/(my^2) with unit 1/K*m^3
-%Lots of good values can be found as a function of temperature in appendix 1
-B=1; %evaporation coefficient
 
 %Horizontal plates (with sides?)
 %use horizontal plates
