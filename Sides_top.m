@@ -25,8 +25,8 @@ T_wall_outer=T_wall(2);                             %Temperature of outer wall
 %Bulk - Water surface - Surroundings
 
 G=@T_surface_solve;                                    %Declaring function
-x0=[280]                                       %Initial guess of temperatures
-[T_surface,y]=fsolve(G,x0,OPTIONS);                    %Fsolve for temperature profile
+x1=[280];                                       %Initial guess of temperatures
+[T_surface,y]=fsolve(G,x1,OPTIONS);                    %Fsolve for temperature profile
 
 %Heat profile
 %Convection - Convection + Radiation + Evaporation

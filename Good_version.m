@@ -1,6 +1,5 @@
 function dTdt=Good_version(T_water)
 %% Calculating initial values
-
 %Calc radiation wall-air
 %Calc radiation water-air
 %Fix convection for water surface

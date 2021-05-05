@@ -1,6 +1,8 @@
 function G = T_surface_solve(T_surface)
 %% Calculating initial values
 T_water=273.15+80;
+T_surr=273.15+20;
+m_water = 0.2;              %[kg]   Initial mass
 %Calc radiation wall-air
 %Calc radiation water-air
 %Fix convection for water surface
@@ -16,9 +18,11 @@ epsilon_glass=[0.94, 0.95]; %emissivity, maybe do average instead
 
 %Additional data
 T_surr=20+273.15;           %K ambient temperature
+n_water=18.01528*10^-3;     %[kg/mol] Molar mass
 %Stefan-Boltzmann Law
 sigma=5.676*10^-8;          %W/m^2*K^4
-
+p_atm=101.3*10^3;              %[Pa] 
+R=8.31446261815324;         %[m^3*Pa/(K*mol)]
 %% DECIDING VARIABLES
 m_water=0.2;                             %[kg] mass of water in beaker
 
@@ -57,9 +61,40 @@ dQdt_surface_air=h_surface_air*A_inner*(T_surface-T_surr);                  %[J]
 Radiation=epsilon_glass(1)*sigma*A_inner*(T_surface)^4;  
 
 %Evaporation from water surface to air
-%Coming soon
+% H=1*101325;         %[Pa] Henrys constant atm assuming it is close to 25 C
+% 
+% p_w=p_water(T_surface);             %Partial pressure of water
+% 
+% c_AL_star=p_w/H                    %Concentration of water in equilibrium
+% c_AL=m_water/(n_water*V_water)     %Concentration of water in water
+% 
+% p_w_star=H*c_AL;                   %Partial pressure at equilibrium
+p_A=p_water(T_surr);           %Partial pressure of water in bulk air
+p_Ai=p_water(T_surface);        %Partial pressure at film                       ITS GREAT maybe?
 
-G=(dQdt_water_surface)-(dQdt_surface_air)-(Radiation);                     %[J/s^2]
+my_a=my_air(T_surface);
+rho_a=rho_air(T_surface);
+D_AB=2.634/p_atm;                          %[m^2/s] Table J1
+v=0.3;                                      %[m/s] THIS IS A GUESS
+Re_L=rho_a*v*L_surface/my_a;
+Sc=my_a/(rho_a*D_AB);                           %Ratio of the molecular diffusivity of momentum to the molecular diffusivity of mass
+k_c=0.664*(D_AB/L_surface)*Re_L^(1/2)*Sc^(1/3);     %This or...
+%k_c=Sh_L*D_AB/L;                              %this?
+
+k_G=k_c/(R*T_surface);          %[mol/s*m^2*Pa]
+% k_L=k_x/c_AL
+% 
+% K_G=k_g+k_L/H;
+% K_L=H*k_g+k_L;
+
+% N_A=K_G*(p_w-p_w_star);
+% N_A=K_L*(c_AL_star-c_AL)
+N_A=k_G*A_inner*(p_A-p_Ai);         %[mol/s]
+m_flow=N_A*n_water;        %[kg/s] Mass flow
+E_flow=m_flow*dHvap_water(T_surface)
+
+
+G=(dQdt_water_surface)-(dQdt_surface_air)-(Radiation)-E_flow;                     %[J/s^2]
 
 
 
