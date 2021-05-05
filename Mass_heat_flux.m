@@ -38,10 +38,9 @@ A_cyl_mantle=h_water*(pi*d_outer);          %[m^2]
 A_cyl=A_cyl_mantle+2*(A_outer);             %[m^2]
 L_hori=A_inner/(pi*d_inner);                %[m]
 L_vert=h_water;                             %[m]
+L_surface=A_inner/(pi*d_inner);             %[m]
 delta=d_outer-d_inner;                      %[m]
 m_glass_mantle=A_cyl_mantle*delta*rho_glass;%[kg]    
- 
-
 
 %fsolve to find the inside and outside wall temperatures
 F=@T_wall_solve;
@@ -52,68 +51,34 @@ T_wall_inner=T_wall(1);
 T_wall_outer=T_wall(2);
 
 G=@T_surface_solve;                                     %Declaring function
-x1=330;                                                %Initial guess of temperatures
+x1=320;                                                %Initial guess of temperatures
 [T_surface,y]=fsolve(G,x1,OPTIONS);                     %Fsolve for temperature profile
 
-beta=(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
-C=beta*g*(rho_water(T_water)^2)/(my_water(T_water)^2);                      %[1/K*m^3]
-
-
-%% Convection 
+%% Heat flux
 
 %Convection from water to inner wall 
-Gr_L_water_wall=C*(L_vert^3)*(T_water-T_wall_inner);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
+beta_water_wall=(1-rho_water(T_water)/rho_water(T_wall_inner))/(T_water-T_wall_inner);           %Maybe find another way to calculate beta
+C_water_wall=(beta_water_wall*g*(rho_water(T_water)^2))/(my_water(T_water)^2);                      %[1/K*m^3]
+
+Gr_L_water_wall=C_water_wall*(L_vert^3)*(T_water-T_wall(1));   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
 Ra_L_water_wall=Gr_L_water_wall*pr_water(T_water);
 Nu_L_water_wall=((0.825+0.387*(Ra_L_water_wall^(1/6)))/((1+(0.492/pr_water(T_water))^(9/16))^(8/27)))^2;
 h_water_wall=Nu_L_water_wall*k_water(T_water)/L_vert;            %heat transfer coefficient for water-wall_inner
 
-%Calc conv water-inner wall
-% q=m_glass_mantle*cp*dT;
-
 %Horizontal plates (with sides?)
-%use horizontal plates
-Gr_L_hori=C*(A_inner^3)*(T_surface-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
-Ra_L_hori=Gr_L_hori*pr_water(T_surface);
-Nu_L_hori=0.54*Ra_L_hori^(1/4);
-h_surface=Nu_L_hori*k_water(T_surface)/A_inner; 
+beta_water_surface=(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
+C_water_surface=beta_water_surface*g*(rho_water(T_water)^2)/(my_water(T_water)^2);                      %[1/K*m^3]
 
-%Partial pressures
-pws=exp((77.345+0.0057*T_surr-7235/T_surr)/(T_surr*8.2));
-pw=pws*RH;      %water vapor saturation/partial pressure
+Gr_L_water_surface=C_water_surface*(L_surface^3)*(T_water-T_surface);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
+Ra_L_water_surface=Gr_L_water_surface*pr_water(T_water);
+Nu_L_water_surface=((0.825+0.387*(Ra_L_water_surface^(1/6)))/((1+(0.492/pr_water(T_water))^(9/16))^(8/27)))^2;
+h_water_surface=Nu_L_water_surface*k_water(T_water)/L_surface;            %heat transfer coefficient for water-wall_inner
+
+
 %%
-% %Thermal convection
-% %Water surface
-% % dQ_h1=alfa*S_1*(T-T_w)*dt
-% dQdt_water_air=h_hori*A_inner*(T_water-T_surr);                     %[J/s^2] T_w film temp?
-% %Water to inner wall
-% % dQ_h2=alfa_2*S_1*(T-T_w)*dt
-% dQdt_water_wall=h_water_wall*A_cyl_mantle*(T_water-T_wall_inner);               %[J/s^2]T_w film temp?
-% %Outer wall to air
-% % dQ_h2=alfa_2*S_1*(T-T_w)*dt
-% dQdt_wall_air=h_wall_air*A_cyl_mantle*(T_wall_outer-T_surr);               %[J/s^2]T_w film temp?
-% 
-% %Thermal radiation
-% % dQ_c=epsilon*sigma*S_1*(T+273.15)^4*dt
-% dQdt_c=epsilon_glass(1)*sigma*A_cyl*(T_water)^4;            %[J/s^2]
-% 
-% %Evaporation
-% % dQ_w=beta*S_1*(P_s-P)*dt
-% dQdt_w=0;%B*(P_s-P);                                        %[J/s^2] Need to find out what B is. 
-% 
-% %Conduction
-% % dQ_r=-lamda*S_2*(T_w-T)/delta*dt
-% dQdt_r=0;%k_glass*(T_water-T_surr)/delta;                     %[J/s^2] delta wall thickness. lamda=k_glass
-% 
-% %Summ of heat loss
-% % dQ=dQ_h1+dQ_h2+dQ_c+dQ_w+dQ_r
-% dQdt=dQdt_water_air*1+dQdt_wall_air*1+dQdt_c*1+dQdt_w*1+dQdt_r*1;                  %[J/s^2]
-% 
-% %Relationship between temperature and energy
-% % dQ=cp*m*T
-% %dQdt=cp_water(T_water)*m_water*(T_water-T_surr);            %[J/s^2]
 
-dQdt_water_surface=h_surface*A_inner*(T_water-T_surface);
-dQdt_water_wall=h_water_wall*A_cyl*(T_water-T_wall_inner);
+dQdt_water_wall=h_water_wall*A_cyl*(T_water-T_wall_inner);                  %[J]
+dQdt_water_surface=h_water_surface*A_inner*(T_water-T_surface);             %[J] heat transfer from water to water surface
 
 dQdt=dQdt_water_surface+dQdt_water_wall;
 

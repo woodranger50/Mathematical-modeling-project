@@ -52,7 +52,7 @@ T_wall_inner=T_wall(1);
 T_wall_outer=T_wall(2);
 
 G=@T_surface_solve;                                     %Declaring function
-x1=280;                                                %Initial guess of temperatures
+x1=330;                                                %Initial guess of temperatures
 [T_surface,y]=fsolve(G,x1,OPTIONS);                     %Fsolve for temperature profile
 
 beta=(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
@@ -77,41 +77,7 @@ Ra_L_hori=Gr_L_hori*pr_water(T_surface);
 Nu_L_hori=0.54*Ra_L_hori^(1/4);
 h_surface=Nu_L_hori*k_water(T_surface)/A_inner; 
 
-%Partial pressures
-pws=exp((77.345+0.0057*T_surr-7235/T_surr)/(T_surr*8.2));
-pw=pws*RH;      %water vapor saturation/partial pressure
 %%
-% %Thermal convection
-% %Water surface
-% % dQ_h1=alfa*S_1*(T-T_w)*dt
-% dQdt_water_air=h_hori*A_inner*(T_water-T_surr);                     %[J/s^2] T_w film temp?
-% %Water to inner wall
-% % dQ_h2=alfa_2*S_1*(T-T_w)*dt
-% dQdt_water_wall=h_water_wall*A_cyl_mantle*(T_water-T_wall_inner);               %[J/s^2]T_w film temp?
-% %Outer wall to air
-% % dQ_h2=alfa_2*S_1*(T-T_w)*dt
-% dQdt_wall_air=h_wall_air*A_cyl_mantle*(T_wall_outer-T_surr);               %[J/s^2]T_w film temp?
-% 
-% %Thermal radiation
-% % dQ_c=epsilon*sigma*S_1*(T+273.15)^4*dt
-% dQdt_c=epsilon_glass(1)*sigma*A_cyl*(T_water)^4;            %[J/s^2]
-% 
-% %Evaporation
-% % dQ_w=beta*S_1*(P_s-P)*dt
-% dQdt_w=0;%B*(P_s-P);                                        %[J/s^2] Need to find out what B is. 
-% 
-% %Conduction
-% % dQ_r=-lamda*S_2*(T_w-T)/delta*dt
-% dQdt_r=0;%k_glass*(T_water-T_surr)/delta;                     %[J/s^2] delta wall thickness. lamda=k_glass
-% 
-% %Summ of heat loss
-% % dQ=dQ_h1+dQ_h2+dQ_c+dQ_w+dQ_r
-% dQdt=dQdt_water_air*1+dQdt_wall_air*1+dQdt_c*1+dQdt_w*1+dQdt_r*1;                  %[J/s^2]
-% 
-% %Relationship between temperature and energy
-% % dQ=cp*m*T
-% %dQdt=cp_water(T_water)*m_water*(T_water-T_surr);            %[J/s^2]
-
 dQdt_water_surface=h_surface*A_inner*(T_water-T_surface);
 dQdt_water_wall=h_water_wall*A_cyl*(T_water-T_wall_inner);
 
