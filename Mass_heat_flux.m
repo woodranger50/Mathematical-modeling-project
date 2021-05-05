@@ -1,4 +1,4 @@
-function dTdt=Mass_heat_flux(T_water)
+function dTdt=Mass_heat_flux(t,T_water)
 %% Calculating initial values
 %Calc radiation wall-air
 %Calc radiation water-air
