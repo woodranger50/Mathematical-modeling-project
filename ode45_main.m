@@ -1,20 +1,30 @@
 clear all, clear, clc;
-
+format long
 t_span = [0 1800];
-% m_water = 0.2;              %[kg]   Initial mass
+m_water = 0.2;              %[kg]   Initial mass
 T_water = 80+273.15;        %[K]   Initial temperature
-% y0=[T_water,m_water];
+y0=[T_water,m_water];
 
-% [time,Temperature,mass] = ode45(@(T_water,m_water) Good_version(T_water,m_water),t_span,T_water,m_water);
-[t,dTdt]=ode45(@(t,dTdt)Mass_heat_flux(t,dTdt),t_span,T_water);
 
-% steps=length(T_water);
-% t=linspace(t_span(1),t_span(2),steps);
-T=dTdt-273.15;
+% T=T_water+dTdt
+% dmdt
+% m=m_water+dmdt
+
+[t,dt]=ode45(@Mass_heat_flux,t_span,y0);
+
+T=dt(:,1);
+T_water=T-273.15;
+m=dt(:,2);
+m_water=m*10^3;
+
 figure
 hold on
-title('Temperature'); xlabel('Time (seconds)'); ylabel('Temperature (°C)')
-plot(t,T,'-o')
+subplot(2,1,1)
+title('Temperature'); xlabel('Time (seconds)'); ylabel('Temperature [°C]')
+plot(t,T_water,'-o')
+subplot(2,1,2)
+title('Mass'); xlabel('Time (seconds)'); ylabel('Mass [g]')
+plot(t,m_water,'-o')
 hold off
 
 %% To do

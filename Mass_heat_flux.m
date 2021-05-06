@@ -1,9 +1,10 @@
-function dTdt=Mass_heat_flux(t,T_water)
+function dt=Mass_heat_flux(t,ICs)
 %% Calculating initial values
 %Calc radiation wall-air
 %Calc radiation water-air
 %Fix convection for water surface
-
+T_water=ICs(1);
+m_water=ICs(2);
 %Data for glass beakers are in ml, mm, mm, mm 
 %and are size, height, outer diameter, and inner diameter in order
 beaker_large=[800,135,98,93]*10^-3;   
@@ -25,7 +26,7 @@ sigma=5.676*10^-8;          %W/m^2*K^4
 pa=101.3*10^3;              %[Pa]
 
 %% DECIDING VARIABLES
-m_water=0.2;                             %[kg] mass of water in beaker
+% m_water=0.2;                             %[kg] mass of water in beaker
 
 d_inner=beaker_small(4);            %[m] diameter water
 d_outer=beaker_small(3);            %[m]
@@ -83,5 +84,8 @@ dQdt_water_surface=h_water_surface*A_inner*(T_water-T_surface);             %[J]
 dQdt=dQdt_water_surface+dQdt_water_wall;
 
 %Differential equation T(t)
-dTdt=-dQdt/(cp_water(T_water)*m_water);                       %[K/s]
+[G,m_flow]=T_surface_solve(T_surface);
+dt= zeros(2,1);
+dt(1)=-dQdt/(cp_water(T_water)*m_water);                       %[K/s]
+dt(2)=-m_flow;                                                 %[kg/s]
 end

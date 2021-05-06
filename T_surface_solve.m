@@ -1,4 +1,4 @@
-function G = T_surface_solve(T_surface)
+function [G,m_flow] = T_surface_solve(T_surface)
 %% Calculating initial values
 T_water=273.15+80;
 m_water = 0.2;              %[kg]   Initial mass
