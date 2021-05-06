@@ -35,7 +35,7 @@ A_cyl_mantle=h_water*(pi*d_outer);          %[m^2]
 L_surface=A_inner/(pi*d_inner);             %[m]
 
 beta=(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
-C=beta*g*(rho_water(T_water)^2)/(my_water(T_water)^2);                      %[1/K*m^3]
+C=beta*g*(rho_water(T_water)^2)/(my_water(T_water)^2)*10^-3;                      %[1/K*m^3]
 %% fsolve of surface temperature
 %Convection from water to water surface 
 Gr_L_water_surface=C*(L_surface^3)*(T_water-T_surface);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity

@@ -1,6 +1,5 @@
-function F = T_wall_solve(T_wall)
+function F = T_wall_solve(T_wall,T_water,m_water)
 %% Calculating initial values
-T_water=273.15+80;
 %Calc radiation wall-air
 %Calc radiation water-air
 %Fix convection for water surface
@@ -21,8 +20,6 @@ g=9.81;                     %m/s^2
 sigma=5.676*10^-8;          %W/m^2*K^4
 
 %% DECIDING VARIABLES
-m_water=0.2;                             %[kg] mass of water in beaker
-
 d_inner=beaker_small(4);            %[m] diameter water
 d_outer=beaker_small(3);            %[m]
 %%

@@ -28,8 +28,7 @@ plot(t,m_water,'-o')
 hold off
 
 %% To do
-% Make T_water uppdate through time
+
 % Better beta function?
-% Make m_water change
-% Why is temp -500? Debugg...
+%Check if Ra in T_surface_solve is less than 2*10^7
 % Check different ODE?
