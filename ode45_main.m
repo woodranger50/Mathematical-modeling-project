@@ -19,10 +19,10 @@ m_water=m*10^3;
 
 figure
 hold on
-subplot(2,1,1)
+subplot(1,2,1)
 title('Temperature'); xlabel('Time (seconds)'); ylabel('Temperature [°C]')
 plot(t,T_water,'-o')
-subplot(2,1,2)
+subplot(1,2,2)
 title('Mass'); xlabel('Time (seconds)'); ylabel('Mass [g]')
 plot(t,m_water,'-o')
 hold off

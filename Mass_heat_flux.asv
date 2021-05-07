@@ -65,13 +65,13 @@ Ra_L_water_wall=Gr_L_water_wall*pr_water(T_water);
 Nu_L_water_wall=((0.825+0.387*(Ra_L_water_wall^(1/6)))/((1+(0.492/pr_water(T_water))^(9/16))^(8/27)))^2;
 h_water_wall=Nu_L_water_wall*k_water(T_water)/L_vert;            %heat transfer coefficient for water-wall_inner
 
-%Horizontal plates (with sides?)
-beta_water_surface=(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
+%Convection from water to water surface
+beta_water_surface=1/T_surface;%(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
 C_water_surface=beta_water_surface*g*(rho_water(T_water)^2)/(my_water(T_water)^2);                      %[1/K*m^3]
 
 Gr_L_water_surface=C_water_surface*(L_surface^3)*(T_water-T_surface);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
 Ra_L_water_surface=Gr_L_water_surface*pr_water(T_water);
-Nu_L_water_surface=0.14*Ra_L_water_surface^(1/3);
+Nu_L_water_surface=0.54*Ra_L_water_surface^(1/4);
 h_water_surface=Nu_L_water_surface*k_water(T_water)/L_surface;            %heat transfer coefficient for water-wall_inner
 
 

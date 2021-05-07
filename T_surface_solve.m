@@ -34,21 +34,28 @@ delta=d_outer-d_inner;                      %[m]
 A_cyl_mantle=h_water*(pi*d_outer);          %[m^2]
 L_surface=A_inner/(pi*d_inner);             %[m]
 
-beta=(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
-C=beta*g*(rho_water(T_water)^2)/(my_water(T_water)^2);                      %[1/K*m^3]
 %% fsolve of surface temperature
 %Convection from water to water surface 
-Gr_L_water_surface=C*(L_surface^3)*(T_water-T_surface);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
+beta_water_surface=1/T_surface;%(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
+C_water_surface=beta_water_surface*g*(rho_water(T_water)^2)/(my_water(T_water)^2);                      %[1/K*m^3]
+
+% Gr=(beta*g*rho^2*L^3*dT)/(my^2)
+
+
+Gr_L_water_surface=C_water_surface*(L_surface^3)*(T_water-T_surface);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
 Ra_L_water_surface=Gr_L_water_surface*pr_water(T_water);
 Nu_L_water_surface=0.54*Ra_L_water_surface^(1/4);
 h_water_surface=Nu_L_water_surface*k_water(T_water)/L_surface;            %heat transfer coefficient for water-wall_inner
 dQdt_water_surface=h_water_surface*A_inner*(T_water-T_surface);             %[J] heat transfer from water to water surface
 
 %Convection from water surface to air
-Gr_L_surface_air=C*(L_surface^3)*(T_surface-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
-Ra_L_surface_air=Gr_L_surface_air*pr_water(T_water);
+beta_surface_air=1/T_surr;%(1-rho_air(T_surr)/rho_water(T_surface))/(T_surface-T_surr);           %Maybe find another way to calculate beta
+C_surface_air=beta_surface_air*g*(rho_water(T_surface)^2)/(my_water(T_surface)^2);                      %[1/K*m^3]
+
+Gr_L_surface_air=C_surface_air*(L_surface^3)*(T_surface-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
+Ra_L_surface_air=Gr_L_surface_air*pr_water(T_surface);
 Nu_L_surface_air=0.54*Ra_L_water_surface^(1/4);
-h_surface_air=Nu_L_surface_air*k_water(T_water)/L_surface;            %heat transfer coefficient for wall_outer-air
+h_surface_air=Nu_L_surface_air*k_water(T_surface)/L_surface;            %heat transfer coefficient for wall_outer-air
 dQdt_surface_air=h_surface_air*A_inner*(T_surface-T_surr);                  %[J] heat transfer from water surface to air
 
 %Radiation from water surface to air
