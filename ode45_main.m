@@ -6,10 +6,6 @@ T_water = 80+273.15;        %[K]   Initial temperature
 y0=[T_water,m_water];
 
 
-% T=T_water+dTdt
-% dmdt
-% m=m_water+dmdt
-
 [t,dt]=ode45(@Mass_heat_flux,t_span,y0);
 
 T=dt(:,1);
@@ -28,7 +24,8 @@ plot(t,m_water,'-o')
 hold off
 
 %% To do
-
+%Check through all equations
 % Better beta function?
 %Check if Ra in T_surface_solve is less than 2*10^7
 % Check different ODE?
+%beta=1/T? For everything??

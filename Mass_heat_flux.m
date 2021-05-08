@@ -44,20 +44,22 @@ delta=d_outer-d_inner;                      %[m]
 m_glass_mantle=A_cyl_mantle*delta*rho_glass;%[kg]    
 
 %% fsolve to find the inside and outside wall temperatures
+
 OPTIONS=optimoptions(@fsolve,'Display','off');
-x0=[T_water-10, T_water-20];
+
+x0=[T_water-3, T_water-6];
 F=@(T_wall)T_wall_solve(T_wall,T_water,m_water);
 T_wall=fsolve(F,x0,OPTIONS);
-T_wall_inner=T_wall(1);
 
 x1=T_water-10;                                                %Initial guess of temperatures
 G=@(T_surface)T_surface_solve(T_surface,T_water,m_water);                                     %Declaring function
 T_surface=fsolve(G,x1,OPTIONS);                     %Fsolve for temperature profile
 
+T_wall_inner=T_wall(1);
 %% Heat flux
 
 %Convection from water to inner wall 
-beta_water_wall=(1-rho_water(T_water)/rho_water(T_wall_inner))/(T_water-T_wall_inner);           %Maybe find another way to calculate beta
+beta_water_wall=1/T_water;%(1-rho_water(T_water)/rho_water(T_wall_inner))/(T_water-T_wall_inner);           %Maybe find another way to calculate beta
 C_water_wall=(beta_water_wall*g*(rho_water(T_water)^2))/(my_water(T_water)^2);                      %[1/K*m^3]
 
 Gr_L_water_wall=C_water_wall*(L_vert^3)*(T_water-T_wall(1));   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
@@ -66,7 +68,7 @@ Nu_L_water_wall=((0.825+0.387*(Ra_L_water_wall^(1/6)))/((1+(0.492/pr_water(T_wat
 h_water_wall=Nu_L_water_wall*k_water(T_water)/L_vert;            %heat transfer coefficient for water-wall_inner
 
 %Convection from water to water surface
-beta_water_surface=(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
+beta_water_surface=1/T_water;%(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
 C_water_surface=beta_water_surface*g*(rho_water(T_water)^2)/(my_water(T_water)^2);                      %[1/K*m^3]
 
 Gr_L_water_surface=C_water_surface*(L_surface^3)*(T_water-T_surface);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
@@ -76,11 +78,10 @@ h_water_surface=Nu_L_water_surface*k_water(T_water)/L_surface;            %heat 
 
 
 %%
+dQdt_water_wall=h_water_wall*A_cyl_mantle*(T_water-T_wall_inner);                  %[J/s]
+dQdt_water_surface=h_water_surface*A_inner*(T_water-T_surface);             %[J/s] heat transfer from water to water surface
 
-dQdt_water_wall=h_water_wall*A_cyl*(T_water-T_wall_inner);                  %[J]
-dQdt_water_surface=h_water_surface*A_inner*(T_water-T_surface);             %[J] heat transfer from water to water surface
-
-dQdt=dQdt_water_surface+dQdt_water_wall;
+dQdt=dQdt_water_surface+dQdt_water_wall;        %[J/s]
 
 %Differential equation T(t)
 [G,m_flow]=T_surface_solve(T_surface,T_water,m_water);

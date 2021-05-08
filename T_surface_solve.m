@@ -36,7 +36,7 @@ L_surface=A_inner/(pi*d_inner);             %[m]
 
 %% fsolve of surface temperature
 %Convection from water to water surface 
-beta_water_surface=1/T_surface;%(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
+beta_water_surface=1/T_water;%(1-rho_water(T_water)/rho_water(T_surface))/(T_water-T_surface);           %Maybe find another way to calculate beta
 C_water_surface=beta_water_surface*g*(rho_water(T_water)^2)/(my_water(T_water)^2);                      %[1/K*m^3]
 
 % Gr=(beta*g*rho^2*L^3*dT)/(my^2)
@@ -50,19 +50,19 @@ dQdt_water_surface=h_water_surface*A_inner*(T_water-T_surface);             %[J]
 
 %Convection from water surface to air
 beta_surface_air=1/T_surr;%(1-rho_air(T_surr)/rho_water(T_surface))/(T_surface-T_surr);           %Maybe find another way to calculate beta
-C_surface_air=beta_surface_air*g*(rho_water(T_surface)^2)/(my_water(T_surface)^2);                      %[1/K*m^3]
+C_surface_air=beta_surface_air*g*(rho_air(T_surr)^2)/(my_air(T_surr)^2);                      %[1/K*m^3]
 
 Gr_L_surface_air=C_surface_air*(L_surface^3)*(T_surface-T_surr);   %where b is fluid coefficient of thermal expansion, g is grav. const., L is the significant length, dT is temp. diff., mu is fluid viscosity
 Ra_L_surface_air=Gr_L_surface_air*pr_water(T_surface);
-Nu_L_surface_air=0.54*Ra_L_water_surface^(1/4);
-h_surface_air=Nu_L_surface_air*k_water(T_surface)/L_surface;            %heat transfer coefficient for wall_outer-air
+Nu_L_surface_air=0.54*Ra_L_surface_air^(1/4);
+h_surface_air=Nu_L_surface_air*k_air(T_surr)/L_surface;            %heat transfer coefficient for wall_outer-air
 dQdt_surface_air=h_surface_air*A_inner*(T_surface-T_surr);                  %[J] heat transfer from water surface to air
 
 %Radiation from water surface to air
 Radiation=epsilon_glass(1)*sigma*A_inner*(T_surface)^4;  
 
 %Evaporation from water surface to air
-p_A=p_water(T_surr);                            %Partial pressure of water in bulk air
+p_A=p_water(T_water);                            %Partial pressure of water in bulk air
 p_Ai=p_water(T_surface);                        %Partial pressure at film                       ITS GREAT maybe?
 
 my_a=my_air(T_surr);                         %[Pa*s]    
@@ -75,12 +75,12 @@ k_c=0.664*(D_AB/L_surface)*Re_L^(1/2)*Sc^(1/3); %[m/s]
 
 k_G=k_c/(R*T_surface);                          %[mol/s*m^2*Pa]
 
-N_A=k_G*A_inner*(p_Ai-p_A);                     %[mol/s]
+N_A=k_G*A_inner*(p_A-p_Ai);                     %[mol/s]
 m_flow=N_A*n_water;                             %[kg/s] Mass flow
 Evap_energy=m_flow*dHvap_water(T_surface);            %[J/s]
 
 
-G=(dQdt_water_surface)-(dQdt_surface_air)-(Radiation)-Evap_energy;                     %[J/s^2]
+G=(dQdt_water_surface)-dQdt_surface_air-Radiation-Evap_energy;                     %[J/s^2]
 
 
 

@@ -54,13 +54,11 @@ T_h=T_water;    %Defines T_h as the temperature of the water
 T_c=T_surr;     %Defines T_c as the surrounding temperature
 
 dQdt_water_inner_wall=h_water_wall*(T_h-T_wall(1));
-dQdt_outer_wall_air=h_wall_air*(T_wall(2)-T_c);
-dQdt_radiation=epsilon_glass(1)*sigma*(T_wall(2))^4;
-dQdt_conduction=k_glass/delta*(T_wall(1)-T_wall(2));
+dQdt_ou_wall
 
 
-F(1)=dQdt_water_inner_wall-dQdt_conduction;  %Function 1 
-F(2)=dQdt_conduction-dQdt_outer_wall_air-dQdt_radiation;
+F(1)=h_water_wall*(T_h-T_wall(1))-k_glass/delta*(T_wall(1)-T_wall(2));  %Function 1 
+F(2)=h_wall_air*(T_wall(2)-T_c)-k_glass/delta*(T_wall(1)-T_wall(2))-epsilon_glass(1)*sigma*(T_wall(2))^4;
 
 
 end
