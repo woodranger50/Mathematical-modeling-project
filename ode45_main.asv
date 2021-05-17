@@ -93,11 +93,11 @@ F_model = griddedInterpolant(model);
 l_exp=length(large_data_1.data(:,2));
 l_model=length(T_water);
 out = [F_exp(linspace(1,numel(exp),l_model)'), F_model(linspace(1,numel(model),l_model)')];
-T_model=x1.*x.^2,x2.*x,x;
-tbl = table(T_model,out(:,1),'VariableNames',{'x','y'});
+
+tbl = table(x1.*x.^2,x2.*x,x,out(:,1),'VariableNames',{'x1','x2','x3','y'});
 % tbl = table(exp);%out(:,1),out(:,2),'VariableNames',{'EXP Temp','MODEL Temp'});
 
-mdl = fitlm(tbl,'y ~ x')
+mdl = fitlm(tbl,'y ~ x1 + x2 + x3')
 % mdl = fitlm(tbl,FORMULA)
 % TBL = anova(mdl)
 %% To do

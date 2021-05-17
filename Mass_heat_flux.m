@@ -1,8 +1,5 @@
 function dt=Mass_heat_flux(t,ICs)
 %% Calculating initial values
-%Calc radiation wall-air
-%Calc radiation water-air
-%Fix convection for water surface
 T_water=ICs(1);
 m_water=ICs(2);
 %Data for glass beakers are in ml, mm, mm, mm 
@@ -26,11 +23,9 @@ sigma=5.676*10^-8;          %W/m^2*K^4
 pa=101.3*10^3;              %[Pa]
 
 %% DECIDING VARIABLES
-% m_water=0.2;                             %[kg] mass of water in beaker
+d_inner=beaker_large(4);            %[m] diameter water
+d_outer=beaker_large(3);            %[m]
 
-d_inner=beaker_small(4);            %[m] diameter water
-d_outer=beaker_small(3);            %[m]
-%%
 V_water=m_water/rho_water(T_water);         %[m^3] volume water 
 h_water=V_water/(pi*(((d_inner/2)^2)));     %[m] height beaker
 A_inner=pi*(d_inner/2)^2;                   %[m^2]
@@ -56,6 +51,7 @@ G=@(T_surface)T_surface_solve(T_surface,T_water,m_water);                       
 T_surface=fsolve(G,x1,OPTIONS);                     %Fsolve for temperature profile
 
 T_wall_inner=T_wall(1);
+
 %% Heat flux
 
 %Convection from water to inner wall 
@@ -75,7 +71,6 @@ Gr_L_water_surface=C_water_surface*(L_surface^3)*(T_water-T_surface);   %where b
 Ra_L_water_surface=Gr_L_water_surface*pr_water(T_water);
 Nu_L_water_surface=0.54*Ra_L_water_surface^(1/4);
 h_water_surface=Nu_L_water_surface*k_water(T_water)/L_surface;            %heat transfer coefficient for water-wall_inner
-
 
 %%
 dQdt_water_wall=h_water_wall*A_cyl_mantle*(T_water-T_wall_inner);                  %[J/s]
