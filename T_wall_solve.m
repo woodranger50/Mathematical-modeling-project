@@ -17,8 +17,8 @@ g=9.81;                     %m/s^2
 sigma=5.676*10^-8;          %W/m^2*K^4
 
 %% DECIDING VARIABLES
-d_inner=beaker_large(4);            %[m] diameter water
-d_outer=beaker_large(3);            %[m]
+d_inner=beaker_small(4);            %[m] diameter water
+d_outer=beaker_small(3);            %[m]
 
 V_water=m_water/rho_water(T_water);         %[m^3] volume water 
 h_water=V_water/(pi*(((d_inner/2)^2)));     %[m] height beaker

@@ -26,9 +26,9 @@ R=8.31446261815324;                         %[m^3*Pa/(K*mol)]
 %% Geometric calculations
 
 %Inner diameter beaker
-d_inner=beaker_large(4);                    %[m]
+d_inner=beaker_small(4);                    %[m]
 %Outer diameter beaker
-d_outer=beaker_large(3);                    %[m]
+d_outer=beaker_small(3);                    %[m]
 %Inner area surface of water (top of beaker)
 A_inner=pi*(d_inner/2)^2;                   %[m^2]
 %Volume of water
@@ -110,12 +110,12 @@ Sc=my_air(T_surface)/(rho_air(T_surface)*D_AB);
 Pr=pr_water(T_surface);
 
 %Chilton-Colburn analogy
-k_c=h_surface_air*((Pr)^(2/3))/((Sc^(2/3)*rho_air(T_surface)*cp_air(T_surface))); %[m/s]
+k_c=h_surface_air*((Pr)^(2/3))/((Sc^(2/3)*rho_water(T_surface)*cp_water(T_surface))); %[m/s]
 k_G=k_c/(R*T_surface);                          %[mol/s*m^2*Pa]
 
 N_A=k_G*A_inner*(p_Ai-p_A);                     %[mol/s]
-m_flow=N_A*n_water*0.25;                             %[kg/s] Mass flow
-Evap_energy=m_flow*dHvap_water(T_surface)*0.05;            %[J/s]
+m_flow=N_A*n_water;                             %[kg/s] Mass flow
+Evap_energy=m_flow*dHvap_water(T_surface);            %[J/s]
 
 %% dQdt
 
