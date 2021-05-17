@@ -1,6 +1,6 @@
 clear all, clear, clc;
 format long
-t_span = 0:45:1800;
+t_span = 0:1800;
 m_water = 0.1795;              %[kg]   Initial mass
 T_water = 80+273.15;        %[K]   Initial temperature
 y0=[T_water,m_water];
@@ -44,7 +44,7 @@ hold on
 % plot(small_data_2.data(1:61,1),small_data_2.data(1:61,3),'.')
 % plot(small_data_3.data(1:61,1),small_data_3.data(1:61,3),'.')
 % plot(small_data_4.data(1:61,1),small_data_4.data(1:61,3),'.')
-plot(small_data_5.data(1:61,1),small_data_5.data(1:61,3),'.')
+plot(small_data_5.data(1:61,1),small_data_5.data(1:61,3),'x')
 plot(t,m_water,'-')
 legend('EX 5','Mod')
 hold off
@@ -56,7 +56,7 @@ hold on
 % plot(small_data_2.data(1:61,1),small_data_2.data(1:61,2),'.')
 % plot(small_data_3.data(1:61,1),small_data_3.data(1:61,2),'.')
 % plot(small_data_4.data(1:61,1),small_data_4.data(1:61,2),'.')
-plot(small_data_5.data(1:61,1),small_data_5.data(1:61,2),'.')
+plot(small_data_5.data(1:61,1),small_data_5.data(1:61,2),'x')
 plot(t,T_water,'-')
 legend('EX 5','Mod')
 hold off
@@ -81,27 +81,36 @@ hold off
 % hold off
 
 
-exp=large_data_1.data(:,2);
-model=T_water;
 
-F_exp = griddedInterpolant(exp);
-F_model = griddedInterpolant(model);
-
-l_exp=length(large_data_1.data(:,2));
-l_model=length(T_water);
-
-out = [F_exp(linspace(1,numel(exp),l_model)'), F_model(linspace(1,numel(model),l_model)')];
-
-diff=out(:,1)-out(:,2);
-l=length(diff);
-figure
-hold on
-plot(t,diff,'-o')
-hold off
 %% Renaming experimental data
 T = small_data_1.data(:,2); % Temperature
 m = small_data_1.data(:,3); % Dependent variable, m, mass
-t = small_data_1.data(:,1); % Time
+time = small_data_1.data(:,1); % Time
+
+%% Polyfit model temperature and mass
+fitResults_T = polyfit(t,T_water,2);
+fitResults_m = polyfit(t,m_water,2);
+
+y_T=@(x)fitResults_T(1)*x.^2+fitResults_T(2)*x+fitResults_T(3);
+y_m=@(x)fitResults_m(1)*x.^2+fitResults_m(2)*x+fitResults_m(3);
+
+T_model=y_T(time);
+m_model=y_m(time);
+
+diff_T=T_model-T;
+diff_m=m_model-m;
+
+figure
+subplot(2,1,1)
+title('Difference in Temperature Model/EXP')
+hold on
+plot(time,diff_T,'x')
+hold off
+subplot(2,1,2)
+title('Difference in Mass Model/EXP')
+hold on
+plot(time,diff_m,'x')
+hold off
 
 %% CALCULATE REGRESSION PARAMETERS
 % Step 1: Normalize variables****************** 
@@ -127,17 +136,26 @@ beta = inv(X'*X)*X'*T;       % Calculate regression parameters
 
 %% DETERMINE IF AT LEAST ONE REGRESSION PARAMETER IS STATISTICALLY SIGNIFICANT
 % Hint: See MATLAB program in assignment 27
-SSE = (T-X*beta)'*(T-X*beta); % See Appendix
-MSE = SSE/v;   % Mean square error
-T_bar = mean(T);  % Average 
-% SSr = sum((T-T).^2);           %Is this right?
-MSr = SSr/(p-1);
-Fobs = MSr/MSE;
 alpha = 0.05;
-Ftab = finv(1-alpha,p-1,n-p);
+
+%Tempterature
+SSE_T = sum((T_model-T).^2); % See Appendix
+MSE_T = SSE_T/v;   % Mean square error
+T_bar = mean(T);  % Average 
+SSr_T = sum((T_model-T_bar).^2);           %Is this right?
+MSr_T = SSr_T/(p-1);
+Fobs_T = MSr_T/MSE_T;
+Ftab_T = finv(1-alpha,p-1,n-p);
 
 
-
+%Mass
+SSE_m = sum((m_model-m).^2); % See Appendix
+MSE_m = SSE_m/v;   % Mean square error
+m_bar = mean(m);  % Average 
+SSr_m = sum((m_model-m_bar).^2);           %Is this right?
+MSr_m = SSr_m/(p-1);
+Fobs_m = MSr_m/MSE_m;
+Ftab_m = finv(1-alpha,p-1,n-p);
 
 %% To do
 %Check through all equations
@@ -161,3 +179,21 @@ Ftab = finv(1-alpha,p-1,n-p);
 % mdl = fitlm(tbl,'y ~ x')
 % mdl = fitlm(tbl,FORMULA)
 % TBL = anova(mdl)
+
+% exp=large_data_1.data(:,2);
+% model=T_water;
+% 
+% F_exp = griddedInterpolant(exp);
+% F_model = griddedInterpolant(model);
+% 
+% l_exp=length(large_data_1.data(:,2));
+% l_model=length(T_water);
+% 
+% out = [F_exp(linspace(1,numel(exp),l_model)'), F_model(linspace(1,numel(model),l_model)')];
+% 
+% diff=out(:,1)-out(:,2);
+% l=length(diff);
+% figure
+% hold on
+% plot(t,diff,'-o')
+% hold off
