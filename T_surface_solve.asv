@@ -114,10 +114,6 @@ Pr=pr_water(T_surr);
 k_c=h_water_surface*((Pr)^(2/3))/((Sc^(2/3)*rho_water(T_surr)*cp_water(T_surr))); %[m/s]
 k_G=k_c/(R*T_surr);                          %[mol/s*m^2*Pa]
 
-% Confirmation that Pr and Sc are calculated correctly
-Le=Sc/Pr;
-Le_conf=k_water(T_surr)/(rho_water(T_surr)*cp_water(T_surr)*D_AB);
-
 N_A=k_G*(p_A-p_Ai);                     %[kg*mol/(m^2*s*Pa)]
 m_flow=N_A*A_inner*n_water;                             %[kg/s] Mass flow
 Evap_energy=m_flow*dHvap_water(T_surface);            %[J/s]

@@ -1,6 +1,6 @@
 clear all, clear, clc;
 format long
-t_span = 0:1800;
+t_span = [0 1800];
 m_water = 0.1795;              %[kg]   Initial mass
 T_water = 80+273.15;        %[K]   Initial temperature
 y0=[T_water,m_water];
@@ -8,10 +8,18 @@ y0=[T_water,m_water];
 
 [t,dt]=ode45(@Mass_heat_flux,t_span,y0);
 
-T=dt(:,1);
-T_water=T-273.15;
-m=dt(:,2);
-m_water=m*10^3;
+matrix=zeros(41,3);
+for i=1:41
+[~,Frac_evap,Frac_rad,Frac_conv]=Mass_heat_flux(0,[dt(i,1) dt(i,2)]);
+matrix(i,1)=Frac_evap;
+matrix(i,2)=Frac_rad;
+matrix(i,3)=Frac_conv;
+end
+
+T_mod=dt(:,1);
+T_water=T_mod-273.15;
+m_mod=dt(:,2);
+m_water=m_mod*10^3;
 
 % figure
 % hold on
@@ -80,12 +88,10 @@ hold off
 % plot(t,T_water,'-x')
 % hold off
 
-
-
 %% Renaming experimental data
-T = small_data_1.data(:,2); % Temperature
-m = small_data_1.data(:,3); % Dependent variable, m, mass
-time = small_data_1.data(:,1); % Time
+T = small_data_5.data(:,2); % Temperature
+m = small_data_5.data(:,3); % Dependent variable, m, mass
+time = small_data_5.data(:,1); % Time
 
 %% Polyfit model temperature and mass
 fitResults_T = polyfit(t,T_water,2);
@@ -104,11 +110,13 @@ figure
 subplot(2,1,1)
 title('Difference in Temperature Model/EXP')
 hold on
+plot(time,1,'-')
 plot(time,diff_T,'x')
 hold off
 subplot(2,1,2)
 title('Difference in Mass Model/EXP')
 hold on
+plot(time,1,'-')
 plot(time,diff_m,'x')
 hold off
 
@@ -157,6 +165,17 @@ MSr_m = SSr_m/(p-1);
 Fobs_m = MSr_m/MSE_m;
 Ftab_m = finv(1-alpha,p-1,n-p);
 
+%% Physical analysis
+
+figure
+hold on
+title('Fractions')
+plot(t,matrix(:,1),'-')
+plot(t,matrix(:,2),'-')
+plot(t,matrix(:,3),'-')
+legend('Evap','Rad','Conv')
+hold off
+
 %% To do
 %Check through all equations
 % Better beta function?
@@ -166,6 +185,9 @@ Ftab_m = finv(1-alpha,p-1,n-p);
 %R^2-value... the book was wrong, use the 1- version (wikipedia?). Use
 %other indicators if value over 1 or under 0
 
+%Why? And also Fractions? Radiation going up?
+
+%%
 % T_model=x1.*x.^2,x2.*x,x;
 % tbl = table(T_model,out(:,1),'VariableNames',{'x','y'});
 % tbl = table(exp);%out(:,1),out(:,2),'VariableNames',{'EXP Temp','MODEL Temp'});
