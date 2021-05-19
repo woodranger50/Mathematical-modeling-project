@@ -239,7 +239,23 @@ Flof_m=MSlof_m/MSpe_m;
 Ftab_m = finv(1-alpha,p-1,n-p);
 R_sq_m=SSreg_m/(SSreg_m+SSE_m);
 
+format short
 
+Source = {'Regression'; 'Residual'};
+SS = {SSreg_T; SSE_T};
+df = {v_reg; v};
+MS = {MSreg_T; s_squared_T};
+Fobs = {Fobs_T; []};
+Table_T = table(Source, SS, df, MS, Fobs);
+% disp(Table_T)
+
+Source = {'Regression'; 'Residual'};
+SS = {SSreg_m; SSE_m};
+df = {v_reg; v};
+MS = {MSreg_m; s_squared_m};
+Fobs = {Fobs_m; []};
+Table_m = table(Source, SS, df, MS, Fobs);
+% disp(Table_m)
 
 %% Physical analysis
 matrix_sum=matrix(:,1)+matrix(:,2)+matrix(:,3);

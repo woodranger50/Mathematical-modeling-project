@@ -4,4 +4,4 @@ function out = cp_air(T)
 %
 % cp=cp_air(T), T i Kelvingrader
 
-out = 1003.4+0.07*(T-273);
+out = (1003.4+0.07*(T-273))*1;
