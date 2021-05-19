@@ -8,6 +8,8 @@ beaker_small=[250,95,70,67]*10^-3;
 
 %Heat conductivity GLASS
 k_glass=0.9;                                %W/m*K
+% k_polystyrene=0.03;
+% k_glass=k_polystyrene;
 %Emissivity GLASS
 epsilon_glass=[0.94, 0.95];                 %[]
 %Ambient temperature

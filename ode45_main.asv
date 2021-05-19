@@ -48,11 +48,11 @@ figure
 subplot(2,1,1)
 xlabel('Time (s)');  ylabel('Mass (g)');
 hold on
-% plot(small_data_1.data(1:61,1),small_data_1.data(1:61,3),'x')
+plot(small_data_1.data(1:61,1),small_data_1.data(1:61,3),'x')
 % plot(small_data_2.data(1:61,1),small_data_2.data(1:61,3),'x')
 % plot(small_data_3.data(1:61,1),small_data_3.data(1:61,3),'x')
 % plot(small_data_4.data(1:61,1),small_data_4.data(1:61,3),'x')
-plot(small_data_5.data(1:61,1),small_data_5.data(1:61,3),'x')
+% plot(small_data_5.data(1:61,1),small_data_5.data(1:61,3),'x')
 plot(t,m_water,'-')
 legend('Experimental data','Model data')
 hold off
@@ -60,11 +60,11 @@ hold off
 subplot(2,1,2)
 xlabel('Time (s)');  ylabel('Temperature (°C)');
 hold on
-% plot(small_data_1.data(1:61,1),small_data_1.data(1:61,2),'x')
+plot(small_data_1.data(1:61,1),small_data_1.data(1:61,2),'x')
 % plot(small_data_2.data(1:61,1),small_data_2.data(1:61,2),'x')
 % plot(small_data_3.data(1:61,1),small_data_3.data(1:61,2),'x')
 % plot(small_data_4.data(1:61,1),small_data_4.data(1:61,2),'x')
-plot(small_data_5.data(1:61,1),small_data_5.data(1:61,2),'x')
+% plot(small_data_5.data(1:61,1),small_data_5.data(1:61,2),'x')
 plot(t,T_water,'-')
 legend('Experimental data','Model data')
 hold off
