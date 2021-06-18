@@ -99,7 +99,7 @@ dQdt_surface_air=h_surface_air*A_inner*(T_surface-T_surr);                  %[J]
 
 %% Radiation
 %Radiation from water surface to air
-Radiation=0.95*sigma*A_inner*(T_surface)^4;  
+Radiation=0.95*sigma*A_inner*((T_surface)^4-(T_surr^4));  
 
 %% Evaporation
 %Evaporation from water surface to air

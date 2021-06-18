@@ -56,7 +56,7 @@ h_wall_air=Nu_L_wall_air*k_air(T_film_wall_surr)/L_vert;            %heat transf
 
 dQdt_water_inner_wall=h_water_wall*A_cyl_mantle_inner*(T_water-T_wall(1));
 dQdt_outer_wall_air=h_wall_air*A_cyl_mantle_outer*(T_wall(2)-T_surr);
-dQdt_radiation=A_cyl_mantle_outer*epsilon_glass(1)*sigma*(T_wall(2))^4;
+dQdt_radiation=A_cyl_mantle_outer*epsilon_glass(1)*sigma*((T_wall(2)^4)-(T_surr^4));
 dQdt_conduction=k_glass*A_cyl_mantle_inner/delta*(T_wall(1)-T_wall(2));
 
 
