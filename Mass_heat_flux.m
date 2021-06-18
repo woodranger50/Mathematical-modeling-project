@@ -4,7 +4,7 @@ T_water=ICs(1);
 m_water=ICs(2);
 %Data for glass beakers are in ml, mm, mm, mm 
 %and are size, height, outer diameter, and inner diameter in order
-beaker_large=[800,135,98,93]*10^-3;   
+beaker_large=[800,135,98,93]*10^-3;    
 beaker_small=[250,95,70,67]*10^-3;
 
 %Data for glass material
@@ -50,9 +50,9 @@ x0=[T_water-3, T_water-6];
 F=@(T_wall)T_wall_solve(T_wall,T_water,m_water);
 T_wall=fsolve(F,x0,OPTIONS);
 
-x1=T_water-10;                                                %Initial guess of temperatures
-G=@(T_surface)T_surface_solve(T_surface,T_water,m_water);                                     %Declaring function
-T_surface=fsolve(G,x1,OPTIONS);                     %Fsolve for temperature profile
+x1=T_water-10;                                              %Initial guess of temperatures
+G=@(T_surface)T_surface_solve(T_surface,T_water,m_water);   %Declaring function
+T_surface=fsolve(G,x1,OPTIONS);                             %Fsolve for temperature profile
 
 T_wall_inner=T_wall(1);
 T_wall_outer=T_wall(2);
@@ -110,8 +110,8 @@ end
 h_surface_air=Nu_L_surface_air*k_air(T_surface)/L_surface;            %heat transfer coefficient for wall_outer-air
 
 %%
-dQdt_water_wall=h_water_wall*A_cyl_mantle*(T_water-T_wall_inner);                  %[J/s]
-dQdt_water_surface=h_water_surface*A_inner*(T_water-T_surface);             %[J/s] heat transfer from water to water surface
+dQdt_water_wall=h_water_wall*A_cyl_mantle*(T_water-T_wall_inner);    %[J/s] Heat transfer from water to inner wall
+dQdt_water_surface=h_water_surface*A_inner*(T_water-T_surface);      %[J/s] Heat transfer from water to water surface
 
 dQdt=dQdt_water_surface+dQdt_water_wall;        %[J/s]
 
@@ -123,8 +123,8 @@ dt(2)=-m_flow;                                                 %[kg/s]
 
 %% Physical analysis
 %Radiation
-Radiation_surface=0.95*sigma*A_inner*(T_surface)^4;
-Radiation_walls=A_cyl_mantle_outer*epsilon_glass(1)*sigma*(T_wall(2))^4;
+Radiation_surface=0.95*sigma*A_inner*((T_surface^4)-(T_surr^4));
+Radiation_walls=A_cyl_mantle_outer*epsilon_glass(1)*sigma*((T_wall(2)^4)-(T_surr^4));
 
 %Convection
 Convection_surface=h_surface_air*A_inner*(T_surface-T_surr);
